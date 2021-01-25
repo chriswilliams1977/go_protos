@@ -29,9 +29,18 @@ w.Write([]byte(`{"name":"Alex"}`))
 #-------HEADERS--------
 
 #-------PROJECT STRUCTURE------
+#Typically
+#cmd/web for app logic
+#cmd/pkg for created packages
+#ui/html and ui/static for templates, HTML, CSS, images..
 #Tim Hockin set up - https://github.com/thockin/go-build-template
-
 #-------PROJECT STRUCTURE------
+
+#------ TEMPLATING------------
+#Go’s net/http package ships with a built-in http.FileServer handler which you can use to
+#serve files over HTTP from a specific directory.
+#fileServer := http.FileServer(http.Dir("./ui/static"))
+#-------TEMPLATING-------------
 
 project_build:
 	mkdir -p cmd/web pkg ui/html ui/static
