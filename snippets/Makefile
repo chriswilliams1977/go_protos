@@ -42,6 +42,37 @@ w.Write([]byte(`{"name":"Alex"}`))
 #fileServer := http.FileServer(http.Dir("./ui/static"))
 #-------TEMPLATING-------------
 
+#-------REQUESTS---------------
+#can occur when two or more goroutines try to use a piece of shared data (in this example the bank balance) at the same time,
+#but the result of their operations is dependent on the exact order that the scheduler executes their instructions.
+#-------REQUESTS---------------
+
+#------CONFIGURATION-----------
+#Go use conmmand line flags to set config
+addr := flag.String("addr", ":4000", "HTTP network address")
+#set value in cmd lind
+go run cmd/web/* -addr=":9999"
+#use -help to list cmd line flags
+go run cmd/web/* -help
+#can alos use env vars
+addr := os.Getenv("SNIPPETBOX_ADDR")
+#but they do not have help or defaults
+#can workaround this by passing the environment variable as a
+#command-line flag when starting the application
+export SNIPPETBOX_ADDR=":9999"
+go run cmd/web/* -addr=$SNIPPETBOX_ADDR
+#you can also store config in a struct in memory using flag.StringVar(),flag.IntVar(), flag.BoolVar()
+type Config struct {
+Addr string
+StaticDir string
+}
+
+cfg := new(Config)
+flag.StringVar(&cfg.Addr, "addr", ":4000", "HTTP network address")
+flag.StringVar(&cfg.StaticDir, "static-dir", "./ui/static", "Path to static assets")
+flag.Parse()
+#------CONFIGURATION-----------
+
 project_build:
 	mkdir -p cmd/web pkg ui/html ui/static
 	touch cmd/web/main.go
