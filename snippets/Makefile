@@ -73,6 +73,26 @@ flag.StringVar(&cfg.StaticDir, "static-dir", "./ui/static", "Path to static asse
 flag.Parse()
 #------CONFIGURATION-----------
 
+#------LOGGING-----------
+#avoid using the Panic() and Fatal() variations outside of
+#your main() function — it’s good practice to return errors instead, and only panic or exit
+#directly from main().
+
+#Custom loggers created by log.New() are concurrency-safe. You can share a single logger
+#and use it across multiple goroutines and in your handlers without needing to worry about
+#race conditions.
+
+#recommendation is to log your output to standard streams and
+ #redirect the output to a file at runtime.
+ #Can do this in go in you prefer
+ f, err := os.OpenFile("/tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
+ if err != nil {
+ log.Fatal(err)
+ }
+ defer f.Close()
+ infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
+#------LOGGING-----------
+
 project_build:
 	mkdir -p cmd/web pkg ui/html ui/static
 	touch cmd/web/main.go

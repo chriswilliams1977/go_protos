@@ -15,12 +15,7 @@ import (
 //handler
 //takes a http.ResponseWriter - provides methods for assembling a HTTP response and sending it to the user
 //and a *http.Request - struct which holds information about the current request
-func home(w http.ResponseWriter, r *http.Request){
-	//prevents the catch all for / subtrees
-	if r.URL.Path != "/" {
-		http.NotFound(w,r)
-		return
-	}
+func  (app *application)  home(w http.ResponseWriter, r *http.Request){
 
 	//w.Write([]byte("Hello from Snippets"))
 
@@ -57,7 +52,7 @@ func home(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func showSnippet(w http.ResponseWriter, r *http.Request){
+func (app *application)  showSnippet(w http.ResponseWriter, r *http.Request){
 	// Extract the value of the id parameter from the query string and try to
 	// convert it to an integer using the strconv.Atoi() function. If it can't
 	// be converted to an integer, or the value is less than 1, we return a 404 page
@@ -73,7 +68,7 @@ func showSnippet(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Display a specific snippet with ID %d",id)
 }
 
-func createSnippet(w http.ResponseWriter, r *http.Request){
+func (app *application)  createSnippet(w http.ResponseWriter, r *http.Request){
 	// Use r.Method to check whether the request is using POST or not.
 	// If it's not, use the w.WriteHeader() method to send a 405 status code and
 	// the w.Write() method to write a "Method Not Allowed" response body. We
