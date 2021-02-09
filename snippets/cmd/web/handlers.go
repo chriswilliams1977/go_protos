@@ -2,20 +2,24 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
-	"html/template"
-	"log"
 )
 
 //handlers are control logic to write HTTP response headers and bodies
 //router maps URL request pattern to handler
 //webserver listens for incoming requests
-
 //handler
 //takes a http.ResponseWriter - provides methods for assembling a HTTP response and sending it to the user
 //and a *http.Request - struct which holds information about the current request
 func  (app *application)  home(w http.ResponseWriter, r *http.Request){
+
+	if r.URL.Path != "/" {
+		//uses notfound helper
+		app.notFound(w)
+		return
+	}
 
 	//w.Write([]byte("Hello from Snippets"))
 
@@ -37,8 +41,7 @@ func  (app *application)  home(w http.ResponseWriter, r *http.Request){
 	//Variadic functions can be called with any number of trailing arguments. For example, fmt.Println is a common variadic function.
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err) // Use the serverError() helper.
 		return
 	}
 
@@ -47,8 +50,7 @@ func  (app *application)  home(w http.ResponseWriter, r *http.Request){
 	// dynamic data that we want to pass in, which for now we'll leave as nil.
 	err = ts.Execute(w, nil)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err) // Use the serverError() helper.
 	}
 }
 
@@ -59,7 +61,7 @@ func (app *application)  showSnippet(w http.ResponseWriter, r *http.Request){
 	// not found response.
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.NotFound(w,r)
+		app.notFound(w) // Use the notFound() helper.
 		return
 	}
 
@@ -87,7 +89,9 @@ func (app *application)  createSnippet(w http.ResponseWriter, r *http.Request){
 			w.Write([]byte("Method not allowed"))
 		*/
 		//common way to handle response code and pass message to header
-		http.Error(w,"Method not allowed",405)
+		//http.Error(w,"Method not allowed",405)
+		//return
+		app.clientError(w, http.StatusMethodNotAllowed) // Use the clientError() helper.
 		return
 	}
 
