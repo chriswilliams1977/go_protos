@@ -109,6 +109,8 @@ create_source_gsr:
 	gcloud source repos create snippets
 	git remote add google \
 	https://source.developers.google.com/p/williamscj-demos/r/snippets
+	#Add and commit git files as normal
+    #git push google master - push to google origin
 create_af_repo:
 	#Set up artifact registry repo for images
 	#gcloud artifacts locations list - gets list of supported regions
