@@ -103,7 +103,7 @@ build_local:
 	docker build -t snippets-example .
 	#ADD Image to GCR
 	#docker tag snippets-example gcr.io/williamscj-gke-demos/snippets-example:v1
-	#docker push  gcr.io/williamscj-gke-demos/snippets-example:v1
+	#docker push  gcr.io/williamscj-gke-demos/snippets-example:v1 -
 create_source_gsr:
 	git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
 	gcloud source repos create snippets
