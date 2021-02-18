@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"os"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog,
@@ -37,4 +38,12 @@ func (app *application) notFound(w http.ResponseWriter) {
 
 	app.clientError(w, http.StatusNotFound)
 
+}
+
+func GetEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
 }

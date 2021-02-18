@@ -13,6 +13,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog *log.Logger
+	uiPath string
 }
 
 func main(){
@@ -46,10 +47,13 @@ func main(){
 	// file name and line number.
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	uiPath := GetEnv("UI_PATH","./ui/")
+
 	// Initialize a new instance of application containing the dependencies.
 	app := &application{
 		errorLog: errorLog,
 		infoLog: infoLog,
+		uiPath: uiPath,
 	}
 
 	// Initialize a new http.Server struct. We set the Addr and Handler fields so
