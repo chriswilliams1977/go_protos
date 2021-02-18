@@ -1,5 +1,5 @@
 steps:
-  - name:'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '.' ]
+- name:'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1', '.' ]
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}'
+  - 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1'

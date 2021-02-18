@@ -93,6 +93,18 @@
 	#infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 #------LOGGING-----------
 
+#------SET UP STEPS------
+#Create project structure
+#add source code for app/containers
+#add Dockerfile and cloudbuild.yaml
+#create source repo
+#create artifact registry repo
+#Push source to repo
+#create cloud build trigger
+#push code to repo - cloud build will build image and deploy to artifact registry
+#------SET UP STEPS------
+
+
 
 project_build:
 	mkdir -p cmd/web pkg ui/html ui/static
@@ -110,7 +122,9 @@ create_source_gsr:
 	git remote add google \
 	https://source.developers.google.com/p/williamscj-demos/r/snippets
 	#Add and commit git files as normal
-    #git push google master - push to google origin
+    #git push google main - push to google origin
+    #to push all local git repo to gsr
+    #git push --all google
 create_af_repo:
 	#Set up artifact registry repo for images
 	#gcloud artifacts locations list - gets list of supported regions
