@@ -2,5 +2,6 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
     [ 'build', '-t', 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1', '.' ]
+  dir: 'snippets'
 images:
   - 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1'
