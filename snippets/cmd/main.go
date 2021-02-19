@@ -5,16 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	//if this is not being picked up make sure all referenced package files have no errors
+	//if they have errors GOLand will not pull in mod reference correctly
+	snippets "github.com/chriswilliams1977/protos/internal/app/snippets"
 )
-
-// Define an application struct to hold the application-wide dependencies for the
-// web application. For now we'll only include fields for the two custom loggers, but
-// we'll add more to it as the build progresses.
-type application struct {
-	errorLog *log.Logger
-	infoLog *log.Logger
-	uiPath string
-}
 
 func main(){
 
@@ -47,13 +41,13 @@ func main(){
 	// file name and line number.
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	uiPath := GetEnv("UI_PATH","./ui/")
+	uiPath := snippets.GetEnv("UI_PATH","./web/")
 
 	// Initialize a new instance of application containing the dependencies.
-	app := &application{
-		errorLog: errorLog,
-		infoLog: infoLog,
-		uiPath: uiPath,
+	app := &snippets.Application{
+		ErrorLog: errorLog,
+		InfoLog: infoLog,
+		UiPath: uiPath,
 	}
 
 	// Initialize a new http.Server struct. We set the Addr and Handler fields so
@@ -63,7 +57,7 @@ func main(){
 	srv := &http.Server{
 		Addr: *addr,
 		ErrorLog: errorLog,
-		Handler: app.routes(), // Call the new app.routes() method
+		Handler: app.Routes(), // Call the new app.routes() method
 	}
 
 	// Use the http.ListenAndServe() function to start a new web server. We pass in

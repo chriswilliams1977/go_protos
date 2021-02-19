@@ -137,13 +137,14 @@ set_af_permissions:
 	#gcloud projects get-iam-policy williamscj-demos
 	gcloud projects set-iam-policy williamscj-demos policy.yaml
 build_af:
+	#NOTE THIS IS COVERED IN Cloud Build STEP
 	#Push image
 	#Uses Artifact Registry on GCP
 	#gcloud auth configure-docker europe-west4-docker.pkg.dev  - allows docker to push to artifact repo
 	#tag image
-	docker tag snippets-example europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1
+	docker tag snippets-example europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
 	#push image
-	docker push europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v1
+	docker push europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
 deploy_gke:
 	#To view get svc LB external IP
 	kubectl apply -f go-deploy.yaml

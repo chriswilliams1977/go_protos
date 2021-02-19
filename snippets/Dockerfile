@@ -18,8 +18,9 @@ COPY go.mod .
 RUN go mod download
 
 #Copy app files to WORKDIR
-COPY ./cmd/web/ .
-ADD ./ui/. ./ui/
+COPY ./cmd/ .
+ADD ./internal/. ./internal/
+ADD ./web/. ./web/
 
 # Build the command inside the container.
 RUN CGO_ENABLED=0 GOOS=linux go build -v -o snippets-example
@@ -33,13 +34,13 @@ WORKDIR /app
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/snippets-example ./snippets-example
 RUN mkdir ./ui/
-COPY --from=builder /app/ui ./ui/
+COPY --from=builder /app/web ./web/
 
 #set global env var to build var
 ENV APP_ENV "production"
 
 #set global env var to build var
-ENV UI_PATH "./ui/"
+ENV UI_PATH "./web/"
 
 # Run the web service on container startup.
 CMD ["/app/snippets-example"]

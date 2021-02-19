@@ -1,11 +1,21 @@
-package main
+package snippets
 
 import (
 	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
+	"log"
 )
+
+// Define an application struct to hold the application-wide dependencies for the
+// web application. For now we'll only include fields for the two custom loggers, but
+// we'll add more to it as the build progresses.
+type Application struct {
+	ErrorLog *log.Logger
+	InfoLog *log.Logger
+	UiPath string
+}
 
 //handlers are control logic to write HTTP response headers and bodies
 //router maps URL request pattern to handler
@@ -13,7 +23,7 @@ import (
 //handler
 //takes a http.ResponseWriter - provides methods for assembling a HTTP response and sending it to the user
 //and a *http.Request - struct which holds information about the current request
-func  (app *application)  home(w http.ResponseWriter, r *http.Request){
+func  (app *Application)  home(w http.ResponseWriter, r *http.Request){
 
 	if r.URL.Path != "/" {
 		//uses notfound helper
@@ -26,9 +36,9 @@ func  (app *application)  home(w http.ResponseWriter, r *http.Request){
 	// Initialize a slice containing the paths to the two files. Note that the
 	// home.page.tmpl file must be the *first* file in the slice.
 	files := []string{
-		app.uiPath+"html/home.page.tmpl",
-		app.uiPath+"html/base.layout.tmpl",
-		app.uiPath+"html/footer.partial.tmpl",
+		app.UiPath+"html/home.page.tmpl",
+		app.UiPath+"html/base.layout.tmpl",
+		app.UiPath+"html/footer.partial.tmpl",
 	}
 
 	// Use the template.ParseFiles() function to read the template file into a
@@ -54,7 +64,7 @@ func  (app *application)  home(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func (app *application)  showSnippet(w http.ResponseWriter, r *http.Request){
+func (app *Application)  showSnippet(w http.ResponseWriter, r *http.Request){
 	// Extract the value of the id parameter from the query string and try to
 	// convert it to an integer using the strconv.Atoi() function. If it can't
 	// be converted to an integer, or the value is less than 1, we return a 404 page
@@ -70,7 +80,7 @@ func (app *application)  showSnippet(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w,"Display a specific snippet with ID %d",id)
 }
 
-func (app *application)  createSnippet(w http.ResponseWriter, r *http.Request){
+func (app *Application)  createSnippet(w http.ResponseWriter, r *http.Request){
 	// Use r.Method to check whether the request is using POST or not.
 	// If it's not, use the w.WriteHeader() method to send a 405 status code and
 	// the w.Write() method to write a "Method Not Allowed" response body. We

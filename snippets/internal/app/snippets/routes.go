@@ -1,10 +1,10 @@
-package main
+package snippets
 
 import (
 	"net/http"
 )
 
-func (app *application) routes() *http.ServeMux {
+func (app *Application) Routes() *http.ServeMux {
 
 	//servemux supports two URL patterns
 	//fixed - dont end with / - /snippet
@@ -33,7 +33,7 @@ func (app *application) routes() *http.ServeMux {
 	// Note that the path given to the http.Dir function is relative to the project
 	// directory root.
 	//./ui/static/
-	fileServer := http.FileServer(http.Dir(app.uiPath+"static/"))
+	fileServer := http.FileServer(http.Dir(app.UiPath+"static/"))
 
 	// Use the mux.Handle() function to register the file server as the handler for
 	// all URL paths that start with "/static/". For matching paths, we strip the
