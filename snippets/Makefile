@@ -145,8 +145,9 @@ build_af:
 	docker tag snippets-example europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
 	#push image
 	docker push europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
-deploy_gke:
+#These are handled by Cloud Build
+deploy:
 	#To view get svc LB external IP
-	kubectl apply -f go-deploy.yaml
-svc_gke:
-	kubectl apply -f go-service.yaml
+	kubectl apply -f /deployments/deployment.yaml
+svc:
+	kubectl apply -f /deoployments/service.yaml

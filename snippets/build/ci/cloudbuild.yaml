@@ -1,9 +1,19 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
-    [ 'build', '-t', 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:$REVISION_ID', '.' ]
+    [ 'build', '-t', 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}', '.' ]
   #this sets the workdir for the build step
   #use this if dockerfile is in subdir from root
   dir: 'snippets'
+- name: "gcr.io/cloud-builders/gke-deploy"
+  args:
+    - run
+    - --filename=/deployments/deployment.yaml
+    - --image=europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}
+    - --location=${_CLOUDSDK_COMPUTE_ZONE}
+    - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
+substitutions:
+  _IMAGE_VERSION: v3 # default value
 images:
-  - 'europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:$REVISION_ID'
+  - 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}'
+# deploy container image to GKE
