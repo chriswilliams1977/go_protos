@@ -19,9 +19,6 @@ steps:
     - 'apply'
     - '-f'
     - '/workspace/deployments/deployment.yaml'
-  env:
-    - --location=${_CLOUDSDK_COMPUTE_ZONE}
-    - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
 substitutions:
   _IMAGE_VERSION: v3 # default value
 images:
