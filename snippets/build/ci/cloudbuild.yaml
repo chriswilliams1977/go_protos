@@ -5,8 +5,12 @@ steps:
   #this sets the workdir for the build step
   #use this if dockerfile is in subdir from root
   dir: 'snippets'
-- name: 'bash'
-  args: ['echo', $PWD]
+- name: 'ubuntu'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      printenv
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Deploy
   args:
