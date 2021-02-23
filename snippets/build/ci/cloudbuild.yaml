@@ -5,12 +5,14 @@ steps:
   #this sets the workdir for the build step
   #use this if dockerfile is in subdir from root
   dir: 'snippets'
-- name: 'ubuntu'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      printenv
+#PRINT OUT ENV VARS
+#- name: 'ubuntu'
+#  entrypoint: 'bash'
+#  args:
+#    - '-c'
+#    - |
+#      printenv
+# deploy container image to GKE
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Deploy
   args:
@@ -18,10 +20,10 @@ steps:
     - '-f'
     - '/workspace/deployments/deployment.yaml'
   env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-b'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cloudbuild'
+    - --location=${_CLOUDSDK_COMPUTE_ZONE}
+    - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
 substitutions:
   _IMAGE_VERSION: v3 # default value
 images:
   - 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}'
-# deploy container image to GKE
+
