@@ -111,10 +111,11 @@ project_build:
 	touch cmd/web/main.go
 	touch cmd/web/handlers.go
 build_local:
+	#once built run using docker run  -p 4000:4000 [image name]
 	#build and tag image
 	docker build -t snippets-example .
 	#ADD Image to GCR
-	#docker tag snippets-example gcr.io/williamscj-gke-demos/snippets-example:v1
+	docker tag snippets-example gcr.io/williamscj-gke-demos/snippets-example:v3
 	#docker push  gcr.io/williamscj-gke-demos/snippets-example:v1 -
 create_source_gsr:
 	git config --global credential.'https://source.developers.google.com'.helper gcloud.sh

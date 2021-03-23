@@ -1,26 +1,38 @@
+#FLOW
+#Dev pushes terraform to env branch (dev or prod) cloud build triggers manifest and builds state
+#Dev pushes terraform to feature branch  cloud build runs terraform plan but nothing applied - used to discuss changes
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
+  #Look below at substitutions for vars
     [ 'build', '-t', 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}', '.' ]
   #this sets the workdir for the build step
   #use this if dockerfile is in subdir from root
   dir: 'snippets'
-#PRINT OUT ENV VARS
-#- name: 'ubuntu'
-#  entrypoint: 'bash'
-#  args:
-#    - '-c'
-#    - |
-#      printenv
-# deploy container image to GKE
-- name: 'gcr.io/cloud-builders/kubectl'
-  id: Deploy
+  #DEBUG: PRINT OUT ENV VARS
+  #- name: 'ubuntu'
+  #  entrypoint: 'bash'
+  #  args:
+  #    - '-c'
+  #    - |
+  #      printenv
+  # deploy container image to GKE
+  # Configure a kubectl workspace for this project
+  # Step 2 use terraform to build GCP env inclu GKE clusters
+- id: 'branch name'
+  name: 'alpine'
+  entrypoint: 'sh'
   args:
-    - 'apply'
-    - '-f'
-    - '/workspace/deployments/deployment.yaml'
+    - '-c'
+    - |
+      echo "***********************"
+      echo "$BRANCH_NAME"
+      echo "***********************"
+  ## [START tf-init]
 substitutions:
-  _IMAGE_VERSION: v3 # default value
+  _IMAGE_VERSION: v4 # default value
+  _CLOUDSDK_COMPUTE_ZONE: europe-west4
+  _CLOUDSDK_CONTAINER_CLUSTER:
 images:
   - 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}'
 

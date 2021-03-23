@@ -33,7 +33,8 @@ FROM alpine
 WORKDIR /app
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/snippets-example ./snippets-example
-RUN mkdir ./ui/
+#RUN mkdir ./ui/
+#Create web dir and copy static files
 COPY --from=builder /app/web ./web/
 
 #set global env var to build var

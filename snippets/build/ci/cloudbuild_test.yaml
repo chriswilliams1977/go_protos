@@ -1,0 +1,85 @@
+#FLOW
+#Dev pushes terraform to env branch (dev or prod) cloud build triggers manifest and builds state
+#Dev pushes terraform to feature branch  cloud build runs terraform plan but nothing applied - used to discuss changes
+steps:
+#Step 1 build image and deploy to artifact repo
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  #Look below at substitutions for vars
+    [ 'build', '-t', 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}', '.' ]
+  #this sets the workdir for the build step
+  #use this if dockerfile is in subdir from root
+  dir: 'snippets'
+  #DEBUG: PRINT OUT ENV VARS
+  #- name: 'ubuntu'
+  #  entrypoint: 'bash'
+  #  args:
+  #    - '-c'
+  #    - |
+  #      printenv
+# Step 2 use terraform to build GCP env inclu GKE clusters
+- id: 'branch name'
+  name: 'alpine'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      echo "***********************"
+      echo "$BRANCH_NAME"
+      echo "***********************"
+  ## [START tf-init]
+- id: 'tf init'
+  name: 'hashicorp/terraform:0.12.9'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      cd environments/$BRANCH_NAME
+      terraform init
+  ## [END tf-init]
+
+  # [START tf-plan]
+- id: 'tf plan'
+  name: 'hashicorp/terraform:0.12.9'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      cd environments/$BRANCH_NAME
+      terraform plan
+  ## [END tf-plan]
+
+  ## [START tf-apply]
+- id: 'tf apply'
+  name: 'hashicorp/terraform:0.12.9'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      cd environments/$BRANCH_NAME
+      terraform apply -auto-approve
+  ## [END tf-apply]
+#step 3 Configure a kubectl workspace for this project
+- name: gcr.io/cloud-builders/kubectl
+  args:
+    - cluster-info
+  env:
+    - CLOUDSDK_COMPUTE_REGION=${_CLOUDSDK_COMPUTE_ZONE}
+    - CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}
+    - KUBECONFIG=/workspace/.kube/config
+#step 4 deploy app to GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: Deploy
+  args:
+    - run
+      - --filename=/workspace/deployments/deployment.yaml
+      - --image=europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}
+      - --location=${_CLOUDSDK_COMPUTE_ZONE}
+      - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
+substitutions:
+  _IMAGE_VERSION: v3 # default value
+  _CLOUDSDK_COMPUTE_ZONE: europe-west4
+  _CLOUDSDK_CONTAINER_CLUSTER:
+images:
+  - 'europe-west4-docker.pkg.dev/$PROJECT_ID/snippets/snippets-image:${_IMAGE_VERSION}'
+
