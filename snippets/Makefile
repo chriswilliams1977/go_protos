@@ -105,18 +105,12 @@
 #------SET UP STEPS------
 
 
-
+#######GCP Set Up##########
 project_build:
 	mkdir -p cmd/web pkg ui/html ui/static
 	touch cmd/web/main.go
 	touch cmd/web/handlers.go
-build_local:
-	#once built run using docker run  -p 4000:4000 [image name]
-	#build and tag image
-	docker build -t snippets-example .
-	#ADD Image to GCR
-	docker tag snippets-example gcr.io/williamscj-gke-demos/snippets-example:v3
-	#docker push  gcr.io/williamscj-gke-demos/snippets-example:v1 -
+#If using remote repo ignore
 create_source_gsr:
 	git config --global credential.'https://source.developers.google.com'.helper gcloud.sh
 	gcloud source repos create snippets
@@ -126,6 +120,23 @@ create_source_gsr:
     #git push google main - push to google origin
     #to push all local git repo to gsr
     #git push --all google
+#Set up GCS bucket for Terraform state file
+tf_gcs_setup:
+	PROJECT_ID=$(gcloud config get-value project)
+	gsutil mb gs://${PROJECT_ID}-tfstate #list buckets gsutil ls
+	gsutil versioning set on gs://${PROJECT_ID}-tfstate #turn versioning on
+	sed -i '' s/PROJECT_ID/$PROJECT_ID/g build/ci/environments/*/terraform.tfvars #note MacOS requires an file ext after -i for backup file
+	sed -i '' s/PROJECT_ID/$PROJECT_ID/g build/ci/environments/*/backend.tf
+#######Local Build For Testing##########
+build_local:
+	#once built run using docker run  -p 4000:4000 [image name]
+	#build and tag image
+	docker build -t snippets-example .
+	#ADD Image to GCR
+	docker tag snippets-example gcr.io/williamscj-gke-demos/snippets-example:v3
+	#docker push  gcr.io/williamscj-gke-demos/snippets-example:v1 -
+
+#######Artifact Repo Set Up##########
 create_af_repo:
 	#Set up artifact registry repo for images
 	#gcloud artifacts locations list - gets list of supported regions
@@ -146,9 +157,3 @@ build_af:
 	docker tag snippets-example europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
 	#push image
 	docker push europe-west4-docker.pkg.dev/williamscj-demos/snippets/snippets-image:v2
-#These are handled by Cloud Build
-deploy:
-	#To view get svc LB external IP
-	kubectl apply -f /deployments/deployment.yaml
-svc:
-	kubectl apply -f /deoployments/service.yaml

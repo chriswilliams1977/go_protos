@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
     bucket = "williamscj-demos-tfstate"
-    prefix = "env/dev"
+    prefix = "env/prod"
   }
 }
