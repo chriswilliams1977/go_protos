@@ -35,7 +35,7 @@ steps:
   args:
     - '-c'
     - |
-      cd environments/$BRANCH_NAME
+      cd build/ci/environments/$BRANCH_NAME
       terraform init
   ## [END tf-init]
 
@@ -46,7 +46,7 @@ steps:
   args:
     - '-c'
     - |
-      cd environments/$BRANCH_NAME
+      cd build/ci/environments/$BRANCH_NAME
       terraform plan
   ## [END tf-plan]
 
@@ -57,7 +57,7 @@ steps:
   args:
     - '-c'
     - |
-      cd environments/$BRANCH_NAME
+      cd build/ci/environments/$BRANCH_NAME
       terraform apply -auto-approve
   timeout: 2000s
 ## [END tf-apply]
