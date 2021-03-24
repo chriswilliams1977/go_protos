@@ -35,6 +35,7 @@ steps:
   args:
     - '-c'
     - |
+      ls
       cd build/ci/environments/$BRANCH_NAME
       terraform init
   ## [END tf-init]
