@@ -1,6 +1,6 @@
 #FLOW
-#Dev pushes terraform to env branch (dev or prod) cloud build triggers manifest and builds state
-#Dev pushes terraform to feature branch  cloud build runs terraform plan but nothing applied - used to discuss changes
+#Dev pushes terraform to real env branch (dev or prod) cloud build triggers manifest and builds state
+#Dev pushes terraform to local feature branch  cloud build runs terraform plan but nothing applied - used to discuss changes
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args:
