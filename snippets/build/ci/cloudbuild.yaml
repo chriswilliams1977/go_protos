@@ -10,12 +10,12 @@ steps:
   #use this if dockerfile is in subdir from root
   dir: 'snippets'
   #DEBUG: PRINT OUT ENV VARS
-  #- name: 'ubuntu'
-  #  entrypoint: 'bash'
-  #  args:
-  #    - '-c'
-  #    - |
-  #      printenv
+- name: 'ubuntu'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      printenv
   # deploy container image to GKE
   # Configure a kubectl workspace for this project
   # Step 2 use terraform to build GCP env inclu GKE clusters
