@@ -15,7 +15,7 @@ steps:
   args:
     - '-c'
     - |
-      printenv
+      ls
   # deploy container image to GKE
   # Configure a kubectl workspace for this project
   # Step 2 use terraform to build GCP env inclu GKE clusters
@@ -35,7 +35,6 @@ steps:
   args:
     - '-c'
     - |
-      ls
       cd build/ci/environments/$BRANCH_NAME
       terraform init
   ## [END tf-init]
