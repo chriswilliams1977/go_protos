@@ -127,6 +127,12 @@ tf_gcs_setup:
 	gsutil versioning set on gs://${PROJECT_ID}-tfstate #turn versioning on
 	sed -i '' s/PROJECT_ID/$PROJECT_ID/g build/ci/environments/*/terraform.tfvars #note MacOS requires an file ext after -i for backup file
 	sed -i '' s/PROJECT_ID/$PROJECT_ID/g build/ci/environments/*/backend.tf
+#grant cloud build editor permissions to execute tf
+tf_cb_permission:
+	CLOUDBUILD_SA="$(gcloud projects describe $PROJECT_ID \
+        --format 'value(projectNumber)')@cloudbuild.gserviceaccount.com"
+	gcloud projects add-iam-policy-binding $PROJECT_ID \
+        --member serviceAccount:$CLOUDBUILD_SA --role roles/editor
 #######Local Build For Testing##########
 build_local:
 	#once built run using docker run  -p 4000:4000 [image name]
